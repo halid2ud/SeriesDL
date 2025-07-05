@@ -2,13 +2,6 @@
 
 A powerful command-line tool for downloading TV series and movies with an intuitive interface.
 
-```
-╔══════════════════════════════════════════════════════╗
-║                      SeriesDL                        ║
-║              made with ♥️ by halid2ud                ║
-╚══════════════════════════════════════════════════════╝
-```
-
 ## Features
 
 - 🔍 **Smart Search**: Find TV series and movies quickly
