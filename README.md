@@ -46,6 +46,17 @@ pip install -r requirements.txt
 python main.py
 ```
 
+## Requirements
+
+Create a `requirements.txt` file with:
+
+```
+requests>=2.28.0
+cloudscraper>=1.2.60
+beautifulsoup4>=4.11.0
+rich>=13.0.0
+```
+
 ## Usage
 
 ### Basic Usage
@@ -90,6 +101,29 @@ The application creates a `settings.json` file with the following options:
     "retry_attempts": 3,
     "delay_between_downloads": 0.5
 }
+```
+
+## Project Structure
+
+```
+SeriesDL/
+├── main.py                 # Entry point
+├── app.py                  # Main application logic
+├── config.py               # Configuration settings
+├── settings.py             # Settings manager
+├── utils.py                # Utility functions
+├── models/
+│   ├── episode.py          # Episode data model
+│   └── movie.py            # Movie data model
+├── core/
+│   ├── search.py           # Search functionality
+│   └── download_manager.py # Download handling
+├── network/
+│   ├── scraper.py          # Web scraping
+│   └── downloader.py       # Download
+├── requirements.txt        # Python dependencies
+└── README.md              # This file
+```
 
 ## Features in Detail
 
@@ -97,12 +131,6 @@ The application creates a `settings.json` file with the following options:
 - Real-time search with relevance scoring
 - Cached results for faster repeated searches
 - Fuzzy matching for better search results
-
-### Download Management
-- Concurrent downloads with rate limiting
-- Automatic retry on failures
-- Progress tracking and statistics
-- File existence checking with overwrite protection
 
 ### User Interface
 - Rich console interface with colors and formatting
