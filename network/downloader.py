@@ -913,49 +913,17 @@ def download_fast(url, filename, referer_url=None):
                                 downloaded += len(chunk)
                                 progress.update(task_id, completed=downloaded)
                 
-                # calc final stats
-                if progress.tasks[0].started:
-                    total_time = time.time() - progress.tasks[0].started
-                    final_size = total_size if total_size > 0 else downloaded
-                    average_speed = (final_size / total_time) / (1024 * 1024) if total_time > 0 else 0
-                    
+                # Verify file was actually downloaded
+                if os.path.exists(filename) and os.path.getsize(filename) > 0:
                     console.print("[green][+] Download complete![/green]")
-                    console.print(f"[green][+] Average speed: {average_speed:.2f} MB/s[/green]")
-        
-        return True
+                    return True
+                else:
+                    console.print("[red][!] Downloaded file is empty or missing[/red]")
+                    return False
         
     except Exception as e:
         console.print(f"[red][!] Download failed: {e}[/red]")
-        
-        # Final fallback to wget
-        console.print("[*] Trying wget as final fallback...")
-        try:
-            import subprocess
-            result = subprocess.run([
-                'wget', 
-                '--timeout=30',
-                '--tries=3',
-                '--continue',
-                '--progress=bar:force',
-                '--limit-rate=0',
-                '-O', filename,
-                url
-            ], capture_output=False, text=True)
-            
-            if result.returncode == 0:
-                console.print("\n[+] Download complete with wget!")
-                return True
-            else:
-                raise Exception("wget failed")
-                
-        except (subprocess.SubprocessError, FileNotFoundError):
-            try:
-                wget.download(url, out=filename)
-                console.print("\n[+] Download complete with python wget!")
-                return True
-            except Exception as e:
-                console.print(f"\n[!] All download methods failed: {e}")
-                return False
+        return False
 
 def delpartfiles():
     path = os.getcwd()

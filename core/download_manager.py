@@ -14,7 +14,6 @@ class DownloadManager:
 
     def download_series_episodes(self, details: dict, content_items: list, lang: str, host_info: dict):
         """Handle downloading of series episodes/movies"""
-
         download_dir = self.settings_manager.settings.get("download_folder", "downloads")
         os.makedirs(download_dir, exist_ok=True)
 
@@ -47,10 +46,13 @@ class DownloadManager:
 
                 # Download the content
                 try:
-                    success = download(host_info['url'])
-                    if success:
-                        self.console.print(f"[green]✓ Successfully downloaded: {filename}[/green]")
-                        successful_downloads += 1
+                    if download(host_info['url']):
+                        if os.path.exists(filename) and os.path.getsize(filename) > 0:
+                            self.console.print(f"[green]✓ Successfully downloaded: {filename}[/green]")
+                            successful_downloads += 1
+                        else:
+                            self.console.print(f"[red]✗ Failed to download: {filename}[/red]")
+                            failed_downloads += 1
                     else:
                         self.console.print(f"[red]✗ Failed to download: {filename}[/red]")
                         failed_downloads += 1

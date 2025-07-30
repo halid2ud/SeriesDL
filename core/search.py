@@ -196,18 +196,29 @@ class SeriesSearcher:
             self.console.print(movie_table)
 
     def select_series_episodes(self, details: Dict) -> List:
-        content_type = Prompt.ask(
-            "[bold cyan]What to download?[/bold cyan]",
-            choices=["episodes", "movies", "both"],
-            default="episodes"
-        )
+        has_episodes = bool(details.get('episodes'))
+        has_movies = bool(details.get('movies'))
+        
+        if not has_episodes and not has_movies:
+            self.console.print("[red]No content available for download.[/red]")
+            return []
+        
+        if has_episodes and not has_movies:
+            content_type = "episodes"
+        elif has_movies and not has_episodes:
+            content_type = "movies"
+        else:
+            content_type = Prompt.ask(
+                "[bold cyan]What to download?[/bold cyan]",
+                choices=["episodes", "movies", "both"],
+                default="episodes"
+            )
 
         selected = []
         
         if content_type in ["episodes", "both"] and details['episodes']:
             episodes = sorted(details['episodes'], key=lambda x: (x.season, x.episode))
             
-            # Show available episodes for reference
             seasons = defaultdict(list)
             for ep in episodes:
                 seasons[ep.season].append(ep)
@@ -235,22 +246,17 @@ class SeriesSearcher:
             else:
                 try:
                     selected_nums = self._parse_episode_range(ep_input)
-                    # Get episodes from season 1 by default, or ask for season
                     if not selected_nums:
                         return []
                     
-                    # Check if we need to specify season
-                    season_1_episodes = [ep for ep in episodes if ep.season == 1]
-                    if season_1_episodes:
-                        selected.extend([ep for ep in season_1_episodes if ep.episode in selected_nums])
-                    else:
-                        # If no season 1, ask which season
-                        available_seasons = sorted(set(ep.season for ep in episodes))
+                    if len(seasons) > 1:
                         season_choice = IntPrompt.ask(
-                            f"[bold cyan]Which season? {available_seasons}[/bold cyan]",
-                            default=available_seasons[0]
+                            f"[bold cyan]Which season? {sorted(seasons.keys())}[/bold cyan]",
+                            default=sorted(seasons.keys())[0]
                         )
                         selected.extend([ep for ep in episodes if ep.season == season_choice and ep.episode in selected_nums])
+                    else:
+                        selected.extend([ep for ep in episodes if ep.episode in selected_nums])
                 except ValueError as e:
                     self.console.print(f"[red]Invalid episode range: {e}[/red]")
                     return []
@@ -274,7 +280,6 @@ class SeriesSearcher:
         return selected
 
     def _parse_episode_range(self, input_str: str) -> List[int]:
-        """Parse episode range string like '1-3,5' into list of episode numbers"""
         nums = set()
         try:
             for part in input_str.replace(' ', '').split(','):
