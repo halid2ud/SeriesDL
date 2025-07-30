@@ -2,13 +2,6 @@
 
 A powerful command-line tool for downloading TV series and movies with an intuitive interface.
 
-```
-╔══════════════════════════════════════════════════════╗
-║                      SeriesDL                        ║
-║              made with ♥️ by halid2ud                ║
-╚══════════════════════════════════════════════════════╝
-```
-
 ## Features
 
 - 🔍 **Smart Search**: Find TV series and movies quickly
@@ -120,7 +113,7 @@ SeriesDL/
 │   └── download_manager.py # Download handling
 ├── network/
 │   ├── scraper.py          # Web scraping
-│   └── downloader.py       # Download implementation
+│   └── downloader.py       # Download
 ├── requirements.txt        # Python dependencies
 └── README.md              # This file
 ```
@@ -131,12 +124,6 @@ SeriesDL/
 - Real-time search with relevance scoring
 - Cached results for faster repeated searches
 - Fuzzy matching for better search results
-
-### Download Management
-- Concurrent downloads with rate limiting
-- Automatic retry on failures
-- Progress tracking and statistics
-- File existence checking with overwrite protection
 
 ### User Interface
 - Rich console interface with colors and formatting
